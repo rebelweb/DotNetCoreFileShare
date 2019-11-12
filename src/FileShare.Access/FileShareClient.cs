@@ -11,6 +11,7 @@ namespace FileShare.Access
         private readonly string _username;
         private readonly string _password;
         private readonly string _ipAddress;
+        private SMB2FileStore _fileStore;
         private NTStatus _status;
         private bool _connected;
         
@@ -22,18 +23,23 @@ namespace FileShare.Access
             _password = password;
             _ipAddress = ipAddress;
         }
+
+        public SMB2FileStore Share => _fileStore;
         
         public void Connect()
         {
             _connected = base.Connect(IPAddress.Parse(_ipAddress), SMBTransportType.DirectTCPTransport);
-            
+
             if (_connected)
+            {
                 _status = Login(_domainName, _username, _password);
+                _fileStore = TreeConnect("tmp", out _status) as SMB2FileStore;
+            }
         }
 
         public void Disconnect()
         {
-            if (_status == NTStatus.STATUS_SUCCESS)
+            if (_connected && _status == NTStatus.STATUS_SUCCESS)
                 Logoff();
             
             if (_connected)
