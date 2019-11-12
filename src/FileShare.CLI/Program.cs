@@ -7,13 +7,13 @@ namespace FileShare.CLI
     {
         static void Main(string[] args)
         {
+            string domainName = args[0];
+            string username = args[1];
+            string password = args[2];
+            string shareName = args[3];
+            string fileName = args[4];
+            
             Console.WriteLine("Displaying File Contents In the Share");
-            using (var client = new FileShareClient("", "rebel", "***REMOVED***", "127.0.0.1"))
-            {
-                client.Connect();
-                var fileStore = client.Share;
-                Console.WriteLine("Connected to Share");
-            }
         }
     }
 }
