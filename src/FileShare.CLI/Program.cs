@@ -1,5 +1,6 @@
 ﻿using System;
 using FileShare.Access;
+using FileShare.Access.DTO;
 
 namespace FileShare.CLI
 {
@@ -7,13 +8,20 @@ namespace FileShare.CLI
     {
         static void Main(string[] args)
         {
-            string domainName = args[0];
-            string username = args[1];
-            string password = args[2];
-            string shareName = args[3];
-            string fileName = args[4];
+            ReadFileDTO dto = new ReadFileDTO()
+            {
+                IPAddress = args[0],
+                Username = args[1],
+                Password = args[2],
+                DomainName = "",
+                FileName = args[3],
+                ShareName = "Temp"
+            };
             
             Console.WriteLine("Displaying File Contents In the Share");
+            FileShareService service = new FileShareService();
+            string contents = service.ReadFile(dto);
+            Console.WriteLine(contents);
         }
     }
 }

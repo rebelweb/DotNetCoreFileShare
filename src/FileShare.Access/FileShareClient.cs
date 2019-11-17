@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using FileShare.Access.DTO;
 using SMBLibrary;
 using SMBLibrary.Client;
 
@@ -11,30 +12,38 @@ namespace FileShare.Access
         private readonly string _username;
         private readonly string _password;
         private readonly string _ipAddress;
+        private readonly string _shareName;
         private SMB2FileStore _fileStore;
         private NTStatus _status;
         private bool _connected;
         
         
-        public FileShareClient(string domainName, string username, string password, string ipAddress)
+        public FileShareClient(IClientDTO dto)
         {
-            _domainName = domainName;
-            _username = username;
-            _password = password;
-            _ipAddress = ipAddress;
+            _domainName = dto.DomainName;
+            _username = dto.Username;
+            _password = dto.Password;
+            _ipAddress = dto.IPAddress;
+            _shareName = dto.ShareName;
         }
 
         public SMB2FileStore Share => _fileStore;
         
-        public void Connect()
+        public bool Connect()
         {
             _connected = base.Connect(IPAddress.Parse(_ipAddress), SMBTransportType.DirectTCPTransport);
 
             if (_connected)
             {
                 _status = Login(_domainName, _username, _password);
-                _fileStore = TreeConnect("tmp", out _status) as SMB2FileStore;
+                if (_status == NTStatus.STATUS_SUCCESS)
+                {
+                    _fileStore = TreeConnect(_shareName, out _status) as SMB2FileStore;
+                    return true;
+                }
             }
+
+            return false;
         }
 
         public void Disconnect()
