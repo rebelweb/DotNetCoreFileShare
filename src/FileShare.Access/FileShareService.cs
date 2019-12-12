@@ -6,7 +6,7 @@ using SMBLibrary;
 
 namespace FileShare.Access
 {
-    public class FileShareService
+    public class FileShareService : IFileShareService
     {
         public string ReadFile(ReadFileDTO dto)
         {
