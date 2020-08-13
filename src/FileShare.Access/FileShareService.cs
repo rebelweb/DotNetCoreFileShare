@@ -35,7 +35,7 @@ namespace FileShare.Access
                     {
                         Console.WriteLine("Reading...");
                         share.ReadFile(out var chuckedData, handle, start, 65536);
-                        data = data == null ? chuckedData : data.Union(chuckedData).ToArray();
+                        data = data == null ? chuckedData : data.Concat(chuckedData).ToArray();
                         start += 65536;
                         if (chuckedData.Length < 65536) read = false;
                     }
