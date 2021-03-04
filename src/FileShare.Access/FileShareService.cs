@@ -46,5 +46,38 @@ namespace FileShare.Access
 
             return null;
         }
+
+        public bool WriteFile(WriteFileDto dto)
+        {
+            using (var client = new FileShareClient(dto))
+            {
+                object handle;
+                FileStatus status;
+                bool connected = client.Connect();
+
+                if (!connected)
+                {
+                    Console.WriteLine("Not Connected Exiting");
+                    return false;
+                }
+
+                var share = client.Share;
+                NTStatus ntStatus = share.CreateFile(out handle, out status, dto.FileName, AccessMask.GENERIC_WRITE,
+                    0, ShareAccess.Write, CreateDisposition.FILE_OPEN_IF, CreateOptions.FILE_NON_DIRECTORY_FILE, null);
+
+                if (ntStatus == NTStatus.STATUS_SUCCESS)
+                {
+                    bool writing = true;
+
+                    while (writing)
+                    {
+                        Console.WriteLine("Writing File");
+                        
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }
